@@ -5,7 +5,7 @@ import com.employee.code.model.*;
 import java.util.List;
 
 public interface AdminService {
-    public Admin checkadminlogin(String username,String password);
+    public Admin checkadminlogin(String identifier,String password);
 
     public Manager addManager(Manager manager);
     public List<Manager> viewAllManagers();

@@ -23,8 +23,11 @@ public class EmployeeServiceImplementation implements EmployeeService{
     private ResetTokenRepository resetTokenRepository;
     @Override
     public Employee checkemployeelogin(String username, String password) {
-        return employeeRepository.findByUsernameandPassword(username,password);
+        System.out.println("Checking employee with username: " + username + ", password: " + password);
 
+        Employee e = employeeRepository.findByUsernameOrEmailAndPassword(username, username, password);
+        System.out.println("Employee found: " + e);
+        return e;
     }
     private  long generateRamdomEmployeeId(){
         Random random = new Random();
@@ -85,7 +88,7 @@ public class EmployeeServiceImplementation implements EmployeeService{
 
     @Override
     public Employee findEmployeeByEmail(String email) {
-        return employeeRepository.findByEmail(email);
+        return employeeRepository.findByemail(email);
     }
 
     @Override
@@ -117,7 +120,7 @@ public class EmployeeServiceImplementation implements EmployeeService{
     }
     @Override
     public String generateResetToken(String email) {
-        Optional<Manager> manager = employeeRepository.FindByEmail(email);
+        Optional<Manager> manager = employeeRepository.findByEmail(email);
         if(manager.isPresent()){
             String token = UUID.randomUUID().toString();
             ResetToken rt = new ResetToken();

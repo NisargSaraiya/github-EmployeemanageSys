@@ -24,7 +24,7 @@ public class Leave {
     private String status;
 
     @ManyToOne
-    @JoinColumn(name = "employee_id")
+    @JoinColumn(name = "manager_id")
     private Manager manager;
 
     @ManyToOne

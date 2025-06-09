@@ -6,7 +6,7 @@ import com.employee.code.model.Employee;
 import java.util.List;
 
 public interface EmployeeService {
-    public Employee checkemployeelogin(String username , String password);
+    public Employee checkemployeelogin(String identifier , String password);
     public String registerEmployee(Employee emp);
     public String updateEmployeeProfile(Employee emp);
     public Employee findEmployeeById(long id);

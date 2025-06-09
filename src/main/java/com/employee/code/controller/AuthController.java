@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/auth/checkapi")
+@RequestMapping("/auth")
 @CrossOrigin("*")
 public class AuthController {
 
@@ -29,6 +29,11 @@ public class AuthController {
     private ManagerService managerService;
     @Autowired
     private JWTUtilizer jwtService;
+    @GetMapping("/test")
+    public String test() {
+
+        return "AuthController is active!";
+    }
 
     @GetMapping("/")
     public String home(){

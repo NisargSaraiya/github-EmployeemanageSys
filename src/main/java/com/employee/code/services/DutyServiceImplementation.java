@@ -9,9 +9,10 @@ import com.employee.code.repository.DutyRepository;
 import com.employee.code.repository.EmployeeRepository;
 import com.employee.code.repository.ManagerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class DutyServiceImplementation implements DutyService {
 
     @Autowired
@@ -60,18 +61,19 @@ public class DutyServiceImplementation implements DutyService {
     }
 
     @Override
-    public List<Duty> viewAllDutiesofEmployee(Long eid) {
+    public List<Duty> viewAllDutiesOfEmployee(Long eid) {
         return dutyRepository.findByEmployeeId(eid);
     }
 
+
     @Override
     public List<Duty> viewDutiesAssignedByManager(Long managerid) {
-        return dutyRepository.findByAssignedByManager(managerid);
+        return dutyRepository.findByAssignedByManagerId(managerid);
     }
 
     @Override
-    public List<Duty> viewDutiesAssignedByAdmin(Long adminid) {
-        return dutyRepository.findByAssignedByAdmin(adminid);
+    public List<Duty> viewDutiesAssignedByAdmin(Long aid) {
+        return dutyRepository.findByAssignedByAdminId(aid);
     }
 }
 

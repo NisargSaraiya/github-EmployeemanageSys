@@ -71,16 +71,16 @@ public class EmployeeController {
         }
 
  }
- @GetMapping(".viewprofile")
-    public ResponseEntity<Employee> viewEmpProfile(@RequestParam Long empid,@RequestHeader("Authorize") String authHeader){
+ @GetMapping("/viewprofile")
+    public ResponseEntity<Employee> viewEmpProfile(@RequestParam Long empid,@RequestHeader("Authorization") String authHeader){
      if(!isAuthorized(authHeader,"EMPLOYEE")){
          return ResponseEntity.status(403).body(null);
 
      }
    return ResponseEntity.ok(employeeService.findEmployeeById(empid));
  }
-    @GetMapping(".viewduties")
-    public ResponseEntity<List<Duty>> viewAssignedDuties(@RequestParam Long empid, @RequestHeader("Authorize") String authHeader){
+    @GetMapping("/viewduties")
+    public ResponseEntity<List<Duty>> viewAssignedDuties(@RequestParam Long empid, @RequestHeader("Authorization") String authHeader){
         if(!isAuthorized(authHeader,"EMPLOYEE")){
             return ResponseEntity.status(403).body(null);
 
@@ -104,7 +104,7 @@ public class EmployeeController {
             return ResponseEntity.status(403).body(null);
 
         }
-        List<Leave> le = leaveService.viewLeavesByManager(empid);
+        List<Leave> le = leaveService.viewLeavesByEmployee(empid);
         return ResponseEntity.ok(le);
     }
 

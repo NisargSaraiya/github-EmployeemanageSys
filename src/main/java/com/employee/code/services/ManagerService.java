@@ -6,7 +6,7 @@ import com.employee.code.model.Manager;
 import java.util.List;
 
 public interface ManagerService {
-    public Manager  checkmanagerlogin(String username,String password);
+    public Manager  checkmanagerlogin(String identifier,String password);
     public Manager findManagerById(long id);
     public Manager findManagerByUsername(String username);
     public Manager findManagerByEmail(String email);

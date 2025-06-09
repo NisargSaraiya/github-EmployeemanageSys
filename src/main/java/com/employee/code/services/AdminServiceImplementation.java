@@ -28,10 +28,27 @@ public class AdminServiceImplementation implements AdminService {
     private LeaveRepository leaveRepository;
 
     @Override
-    public Admin checkadminlogin(String username, String password) {
-      return adminRepository.findByUsernameAndPassword(username,password);
+    public Admin checkadminlogin(String identifier, String password) {
+        System.out.println(">> Checking login for: " + identifier);
 
-    }
+        Admin admin = adminRepository.findByUsernameAndPassword(identifier, password);
+
+        if (admin != null) {
+            System.out.println(">> Found admin: " + admin.getUsername());
+            if (admin.getPassword().equals(password)) {
+                System.out.println(">> Password matched");
+                return admin;
+            } else {
+                System.out.println(">> Password mismatch. Expected: " + admin.getPassword() + ", Given: " + password);
+            }
+        } else {
+            System.out.println(">> No admin found for: " + identifier);
+        }
+
+        return null;
+        }
+
+
 
     @Override
     public Manager addManager(Manager manager) {

@@ -11,9 +11,10 @@ import java.util.Optional;
 public interface EmployeeRepository extends JpaRepository<Employee,Long> {
 
     public List<Employee> findByNameContainingIgnoreCase(String name);
-    public Employee findByUsernameandPassword(String username, String password);
+    public Employee findByUsernameOrEmailAndPassword(String username, String email, String password);
+    public Employee findByUsernameAndPassword(String username, String password);
     public Employee findByUsername(String username);
-    public Employee findByEmail(String email);
+    public Employee findByemail(String email);
 
-    public Optional<Manager> FindByEmail(String email);
+    public Optional<Manager> findByEmail(String email);
 }

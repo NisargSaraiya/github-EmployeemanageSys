@@ -25,7 +25,7 @@ public class ManagerServiceImplementation implements ManagerService{
     private ResetTokenRepository resetTokenRepository;
     @Override
     public Manager checkmanagerlogin(String username, String password) {
-        return managerRepository.findByUsernameandPassword(username,password);
+        return managerRepository.findByUsernameAndPassword(username,password);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class ManagerServiceImplementation implements ManagerService{
 
     @Override
     public String generateResetToken(String email) {
-        Optional<Manager> manager = managerRepository.FindByEmail(email);
+        Optional<Manager> manager = managerRepository.findByEmail(email);
         if(manager.isPresent()){
             String token = UUID.randomUUID().toString();
             ResetToken rt = new ResetToken();

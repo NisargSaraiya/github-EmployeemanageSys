@@ -36,7 +36,7 @@ public class AdminController {
 
 
     }
-
+    
     @GetMapping("viewallmanagers")
     public ResponseEntity<List<Manager>> viewAllManagers(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
@@ -135,14 +135,14 @@ public class AdminController {
     }
 
     @GetMapping("/viewemployeeduties")
-    public ResponseEntity<List<Duty>> viewEmployeeAssignedDuties(@RequestParam Long eid, Long mid, @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<List<Duty>> viewEmployeeAssignedDuties(@RequestParam Long eid, @RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
         if (!jwtService.validateToken(token).get("role").equals("ADMIN")) {
             return ResponseEntity.status(403).body(null);
 
 
         }
-        List<Duty> duties = dutyService.viewAllDutiesofEmployee(eid);
+        List<Duty> duties = dutyService.viewAllDutiesOfEmployee(eid);
         return ResponseEntity.ok(duties);
     }
 
