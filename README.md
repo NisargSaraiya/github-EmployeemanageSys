@@ -17,12 +17,6 @@ The Employee Management System is a web-based platform to manage employees, mana
 
 ---
 
-## Screenshots
-
-> _Place your screenshots in `docs/images/` and use the filenames below._
-
-### Login Page
-![Login Page](docs/images/login.png)
 
 ### Admin Dashboard
 ![Admin Dashboard](docs/images/admin_dashboard.png)
