@@ -38,29 +38,6 @@ The Employee Management System is a web-based platform to manage employees, mana
 
 ---
 
-## Setup & Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/your-username/EmployeeManagementSystem.git
-   cd EmployeeManagementSystem
-   ```
-
-2. **Configure the database:**
-   - Edit `src/main/resources/application.properties` with your DB settings.
-
-3. **Build the project:**
-   - Maven:
-     ```bash
-     mvn clean install
-     ```
-   - Gradle:
-     ```bash
-     gradle build
-     ```
-
-4. **Run the application:**
-   ```bash
    mvn spring-boot:run
    ```
    or
@@ -703,8 +680,6 @@ function assignRole() {
 5. Create a pull request
 
 ---
-
-## License
 
 _Add your license here (e.g., MIT, Apache 2.0, etc.)_
 
