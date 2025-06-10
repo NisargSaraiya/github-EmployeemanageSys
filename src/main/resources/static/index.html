@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management System</title>
+    <script>
+        // Check if user is already logged in
+        const token = localStorage.getItem('token');
+        const role = localStorage.getItem('role');
+        
+        if (token && role) {
+            // Redirect to appropriate dashboard
+            switch(role) {
+                case 'admin':
+                    window.location.href = 'admin-dashboard.html';
+                    break;
+                case 'manager':
+                    window.location.href = 'manager-dashboard.html';
+                    break;
+                case 'employee':
+                    window.location.href = 'employee-dashboard.html';
+                    break;
+                default:
+                    window.location.href = 'login.html';
+            }
+        } else {
+            // Redirect to login page
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+<body>
+    <p>Redirecting...</p>
+    <footer style="text-align:center; margin-top: 32px; color: #888; font-size: 1rem;">Made By Nisarg Saraiya</footer>
+</body>
+</html> 
