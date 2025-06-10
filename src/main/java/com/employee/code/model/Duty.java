@@ -1,6 +1,8 @@
 package com.employee.code.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="dutytable")
@@ -15,6 +17,7 @@ public class Duty {
 
     @ManyToOne
     @JoinColumn(name="manager_id")
+    @JsonIgnore
     private Manager manager;
 
     @ManyToOne
@@ -23,9 +26,11 @@ public class Duty {
 
     @ManyToOne
     @JoinColumn(name= "assignedByManager")
+    @JsonIgnore
     private Manager assignedByManager;
     @ManyToOne
     @JoinColumn(name= "assignedByAdmin")
+    @JsonIgnore
     private Admin assignedByAdmin ;
 
     public int getId() {

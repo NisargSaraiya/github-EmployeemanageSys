@@ -1,6 +1,8 @@
 package com.employee.code.controller;
 
 import com.employee.code.model.*;
+import com.employee.code.dto.EmployeeDTO;
+import com.employee.code.dto.ManagerDTO;
 import com.employee.code.security.JWTUtilizer;
 import com.employee.code.services.AdminService;
 import com.employee.code.services.DutyService;
@@ -38,23 +40,41 @@ public class AdminController {
     }
     
     @GetMapping("viewallmanagers")
-    public ResponseEntity<List<Manager>> viewAllManagers(@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<List<ManagerDTO>> viewAllManagers(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
         if (!jwtService.validateToken(token).get("role").equals("ADMIN")) {
             return ResponseEntity.status(403).body(null);
 
         }
-        return ResponseEntity.ok(adminService.viewAllManagers());
+        List<ManagerDTO> dtos = adminService.viewAllManagers().stream().map(manager -> {
+            ManagerDTO dto = new ManagerDTO();
+            dto.setId(manager.getId());
+            dto.setName(manager.getName());
+            dto.setUsername(manager.getUsername());
+            dto.setEmail(manager.getEmail());
+            dto.setRole("manager");
+            return dto;
+        }).collect(java.util.stream.Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("viewallemployees")
-    public ResponseEntity<List<Employee>> viewAllEmployees(@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<List<EmployeeDTO>> viewAllEmployees(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
         if (!jwtService.validateToken(token).get("role").equals("ADMIN")) {
             return ResponseEntity.status(403).body(null);
 
         }
-        return ResponseEntity.ok(adminService.viewAllEmployees());
+        List<EmployeeDTO> dtos = adminService.viewAllEmployees().stream().map(emp -> {
+            EmployeeDTO dto = new EmployeeDTO();
+            dto.setId(emp.getId());
+            dto.setName(emp.getName());
+            dto.setUsername(emp.getUsername());
+            dto.setEmail(emp.getEmail());
+            dto.setRole(emp.getRole());
+            return dto;
+        }).collect(java.util.stream.Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
     @PutMapping("/assigndutytomanager")

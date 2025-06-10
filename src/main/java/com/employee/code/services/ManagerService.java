@@ -6,6 +6,7 @@ import com.employee.code.model.Manager;
 import java.util.List;
 
 public interface ManagerService {
+    List<Employee> findEmployeesByManagerId(Long managerId);
     public Manager  checkmanagerlogin(String identifier,String password);
     public Manager findManagerById(long id);
     public Manager findManagerByUsername(String username);
@@ -19,4 +20,5 @@ public interface ManagerService {
     public  void updatePassword(String token,String newPassword);
     public void deleteResetToken(String token);
     public boolean isTokenExpired(String token);
+    public void updateManager(Manager manager);
 }

@@ -29,24 +29,15 @@ public class AdminServiceImplementation implements AdminService {
 
     @Override
     public Admin checkadminlogin(String identifier, String password) {
-        System.out.println(">> Checking login for: " + identifier);
-
-        Admin admin = adminRepository.findByUsernameAndPassword(identifier, password);
-
+        System.out.println(">> Checking login for: >" + identifier + "<, password: >" + password + "<");
+        Admin admin = adminRepository.findByUsernameOrEmailAndPassword(identifier, password);
         if (admin != null) {
-            System.out.println(">> Found admin: " + admin.getUsername());
-            if (admin.getPassword().equals(password)) {
-                System.out.println(">> Password matched");
-                return admin;
-            } else {
-                System.out.println(">> Password mismatch. Expected: " + admin.getPassword() + ", Given: " + password);
-            }
-        } else {
-            System.out.println(">> No admin found for: " + identifier);
+            System.out.println(">> Found admin: username=" + admin.getUsername() + ", email=" + admin.getEmail());
+            return admin;
         }
-
+        System.out.println(">> No admin found for: " + identifier);
         return null;
-        }
+    }
 
 
 
@@ -61,8 +52,9 @@ public class AdminServiceImplementation implements AdminService {
        Email e = new Email();
        e.setRecipient(manager.getEmail());
        e.setSubject("Welcome Manager");
-
        e.setMessage("Hi" + manager.getName() + "\n\n Successfully added \n\n" + "here is your username:" + manager.getUsername() +"/n Password:" + manager.getPassword());
+       e.setSentAt(java.time.LocalDateTime.now());
+       e.setStatus("PENDING");
        emailRepository.save(e);
 
        emailService.sendEmail(e.getRecipient(),e.getSubject(),e.getMessage());

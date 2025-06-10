@@ -24,25 +24,27 @@ public class ManagerServiceImplementation implements ManagerService{
     @Autowired
     private ResetTokenRepository resetTokenRepository;
     @Override
-    public Manager checkmanagerlogin(String username, String password) {
-        return managerRepository.findByUsernameAndPassword(username,password);
+    public Manager checkmanagerlogin(String identifier, String password) {
+        return managerRepository.findByUsernameOrEmailAndPassword(identifier, password);
+
     }
 
     @Override
     public Manager findManagerById(long id) {
-        return managerRepository.findById(id).get();
+        Optional<Manager> manager = managerRepository.findById(id);
+        return manager.orElse(null);
     }
 
     @Override
     public Manager findManagerByUsername(String username) {
-        return managerRepository.findByUsername(username);
+        return managerRepository.findByUsername(username).orElse(null);
     }
 
 
 
     @Override
     public Manager findManagerByEmail(String email) {
-        return managerRepository.findByemail(email);
+        return managerRepository.findByEmail(email).orElse(null);
     }
 
     @Override
@@ -56,15 +58,19 @@ public class ManagerServiceImplementation implements ManagerService{
     }
 
     @Override
+    public List<Employee> findEmployeesByManagerId(Long managerId) {
+        return employeeRepository.findByManagerId(managerId);
+    }
+
+    @Override
     public String updateEmployeeAccountStatus(Long employeeid, String status) {
         Optional<Employee> emp = employeeRepository.findById(employeeid);
-        if(emp.isPresent()){
-            Employee e = new Employee();
-            e.setAccountstatus(status);
-            employeeRepository.save(e);
+        if (emp.isPresent()) {
+            Employee existingEmployee = emp.get();
+            existingEmployee.setAccountstatus(status);
+            employeeRepository.save(existingEmployee);
             return "Employee Account Status Updated Successfully";
-        }
-        else{
+        } else {
             return "Employee ID Not Found";
         }
     }
@@ -124,5 +130,10 @@ public class ManagerServiceImplementation implements ManagerService{
             return rt.get().getExpiredAt().isBefore(LocalDateTime.now());
         }
         return true;
+    }
+
+    @Override
+    public void updateManager(Manager manager) {
+        managerRepository.save(manager);
     }
 }

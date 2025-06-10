@@ -1,6 +1,7 @@
 package com.employee.code.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.List;
 
@@ -27,10 +28,14 @@ public class Manager {
     @Column(name = "manager_department", nullable=false)
     private String department ;
 
+    @Column(name = "manager_accountstatus")
+    private String accountstatus; // e.g. Accepted, Pending, Rejected
+
     @Column(name = "manager_contact", nullable=false,unique = true)
     private String contact ;
 
     @OneToMany(mappedBy="manager",cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Employee> employees ;
 
     @OneToMany(mappedBy = "assignedByManager",cascade = CascadeType.ALL)
@@ -108,18 +113,21 @@ public class Manager {
         this.dutiesAssigned = dutiesAssigned;
     }
 
+    public String getAccountstatus() {
+        return accountstatus;
+    }
+
+    public void setAccountstatus(String accountstatus) {
+        this.accountstatus = accountstatus;
+    }
+
     @Override
     public String toString() {
-        return "manager{" +
+        return "Manager{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", department='" + department + '\'' +
-                ", contact='" + contact + '\'' +
-                ", employees=" + employees +
-                ", dutiesAssigned=" + dutiesAssigned +
                 '}';
     }
 }

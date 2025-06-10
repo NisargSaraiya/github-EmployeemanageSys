@@ -3,6 +3,7 @@ package com.employee.code.controller;
 import com.employee.code.model.Duty;
 import com.employee.code.model.Employee;
 import com.employee.code.model.Leave;
+import com.employee.code.model.DutyDTO;
 import com.employee.code.security.JWTUtilizer;
 import com.employee.code.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/employee")
@@ -80,12 +82,14 @@ public class EmployeeController {
    return ResponseEntity.ok(employeeService.findEmployeeById(empid));
  }
     @GetMapping("/viewduties")
-    public ResponseEntity<List<Duty>> viewAssignedDuties(@RequestParam Long empid, @RequestHeader("Authorization") String authHeader){
+    public ResponseEntity<List<DutyDTO>> viewAssignedDuties(@RequestParam Long empid, @RequestHeader("Authorization") String authHeader){
         if(!isAuthorized(authHeader,"EMPLOYEE")){
             return ResponseEntity.status(403).body(null);
 
         }
-        return ResponseEntity.ok(employeeService.viewAssignedDuties(empid));
+        List<Duty> duties = employeeService.viewAssignedDuties(empid);
+        List<DutyDTO> dtos = duties.stream().map(DutyDTO::new).collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
     @PostMapping("/applyleave")
     public ResponseEntity<Leave> applyLeave(@RequestBody Leave leave, @RequestParam Long empid, @RequestHeader ("Authorization") String authHeader){
@@ -109,5 +113,16 @@ public class EmployeeController {
     }
 
 
-
+    @DeleteMapping("/deleteduty/{id}")
+    public ResponseEntity<String> deleteDuty(@PathVariable Integer id, @RequestHeader("Authorization") String authHeader) {
+        if (!isAuthorized(authHeader, "EMPLOYEE")) {
+            return ResponseEntity.status(403).body("Unauthorized");
+        }
+        boolean deleted = employeeService.deleteDutyById(id);
+        if (deleted) {
+            return ResponseEntity.ok("Duty deleted successfully");
+        } else {
+            return ResponseEntity.status(404).body("Duty not found");
+        }
+    }
 }

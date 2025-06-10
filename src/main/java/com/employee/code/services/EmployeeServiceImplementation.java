@@ -22,12 +22,12 @@ public class EmployeeServiceImplementation implements EmployeeService{
     @Autowired
     private ResetTokenRepository resetTokenRepository;
     @Override
-    public Employee checkemployeelogin(String username, String password) {
-        System.out.println("Checking employee with username: " + username + ", password: " + password);
-
-        Employee e = employeeRepository.findByUsernameOrEmailAndPassword(username, username, password);
-        System.out.println("Employee found: " + e);
-        return e;
+    public Employee checkemployeelogin(String identifier, String password) {
+        System.out.println("Checking employee with identifier: " + identifier + ", password: " + password);
+        Optional<Employee> optionalEmployee = employeeRepository.findByUsernameOrEmailAndPassword(identifier, identifier, password);
+        Employee employee = optionalEmployee.orElse(null);
+        System.out.println("Employee found: " + employee);
+        return employee;
     }
     private  long generateRamdomEmployeeId(){
         Random random = new Random();
@@ -59,14 +59,25 @@ public class EmployeeServiceImplementation implements EmployeeService{
 
     @Override
     public String registerEmployee(Employee emp) {
-       Long eid = generateRamdomEmployeeId();
-       emp.setId(eid);
-
-       String randomPassword = generateRandomPassword(8);
-       emp.setPassword(randomPassword);
-        emp.setAccountstatus("Pending");
-        emp.setRole("Employee");
-        return "Employee Registered Successful";
+        try {
+            Long eid = generateRamdomEmployeeId();
+            emp.setId(eid);
+            String randomPassword = generateRandomPassword(8);
+            emp.setPassword(randomPassword);
+            emp.setAccountstatus("Pending");
+            emp.setRole("Employee");
+            Employee saved = employeeRepository.save(emp);
+            if (saved != null && saved.getId() != null) {
+                System.out.println("Employee saved: " + saved.getId());
+                return "Employee Registered Successful";
+            } else {
+                System.out.println("Employee not saved");
+                return "Failed to add employee";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error occurred while saving employee: " + e.getMessage();
+        }
     }
 
 
@@ -83,12 +94,12 @@ public class EmployeeServiceImplementation implements EmployeeService{
 
     @Override
     public Employee findEmployeeByUsername(String username) {
-        return employeeRepository.findByUsername(username);
+        return employeeRepository.findByUsername(username).orElse(null);
     }
 
     @Override
     public Employee findEmployeeByEmail(String email) {
-        return employeeRepository.findByemail(email);
+        return employeeRepository.findByEmail(email).orElse(null);
     }
 
     @Override
@@ -111,17 +122,13 @@ public class EmployeeServiceImplementation implements EmployeeService{
 
     @Override
     public List<Duty> viewAssignedDuties(Long empid) {
-        Employee emp = employeeRepository.findById(empid).orElse(null);
-        if(emp !=null){
-            return dutyRepository.findByEmployee(emp);
-        }
-        return Collections.emptyList();
-
+        return dutyRepository.findByEmployeeId(empid);
     }
+
     @Override
     public String generateResetToken(String email) {
-        Optional<Manager> manager = employeeRepository.findByEmail(email);
-        if(manager.isPresent()){
+        Optional<Employee> employee = employeeRepository.findByEmail(email);
+        if(employee.isPresent()){
             String token = UUID.randomUUID().toString();
             ResetToken rt = new ResetToken();
             rt.setToken(token);
@@ -174,5 +181,12 @@ public class EmployeeServiceImplementation implements EmployeeService{
         }
         return true;
     }
-
+    @Override
+    public boolean deleteDutyById(Integer id) {
+        if (dutyRepository.existsById(id)) {
+            dutyRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
 }

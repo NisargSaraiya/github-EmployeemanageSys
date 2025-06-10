@@ -1,6 +1,8 @@
 package com.employee.code.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.List;
 @Entity
@@ -33,7 +35,7 @@ public class Employee {
     @Column(name = "employee_contact", nullable=false,unique = true)
     private String contact;
     @Column(name = "account_status",nullable = false)
-    private String accountstatus;
+    private String accountstatus; // e.g. Accepted, Pending, Rejected
     @Column(name = "employee_role",nullable = false)
     private String role;
 
@@ -42,9 +44,11 @@ public class Employee {
     @OneToMany(mappedBy = "employee",cascade = CascadeType.ALL)
     private List<Leave> leave ;
 @OneToMany(mappedBy = "employee",cascade = CascadeType.ALL)
-    private List<Duty> duty ;
+@JsonManagedReference
+private List<Duty> duty ;
 @ManyToOne
 @JoinColumn(name="manager_id")
+@JsonBackReference
 private Manager manager ;
     public String getRole() {
         return role;
@@ -178,20 +182,9 @@ private Manager manager ;
         return "Employee{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", gender='" + gender + '\'' +
-                ", age=" + age +
-                ", designation='" + designation + '\'' +
-                ", department='" + department + '\'' +
-                ", salary=" + salary +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
                 ", username='" + username + '\'' +
-                ", contact='" + contact + '\'' +
-                ", accountstatus='" + accountstatus + '\'' +
+                ", email='" + email + '\'' +
                 ", role='" + role + '\'' +
-                ", leave=" + leave +
-                ", duty=" + duty +
-                ", manager=" + manager +
                 '}';
     }
 }

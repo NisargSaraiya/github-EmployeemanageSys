@@ -16,9 +16,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.employee.code.dto.AdminDTO;
+import com.employee.code.dto.ManagerDTO;
+import com.employee.code.dto.EmployeeDTO;
+
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:2027")
 public class AuthController {
 
     @Autowired
@@ -40,54 +44,77 @@ public class AuthController {
     return "Employee Management System Backend is running";
 }
 @PostMapping("/checklogin")
-public ResponseEntity<?>login(@RequestBody LoginRequest loginrequest){
+public ResponseEntity<?> login(@RequestBody LoginRequest loginrequest) {
     String identifier = loginrequest.getIdentifier();
     String password = loginrequest.getPassword();
+    System.out.println("[AuthController] Login attempt: identifier >" + identifier + "<, password >" + password + "<");
 
-    Admin admin = adminService.checkadminlogin(identifier,password);
-    Manager manager = managerService.checkmanagerlogin(identifier,password);
-    Employee employee = employeeService.checkemployeelogin(identifier,password);
+    Admin admin = adminService.checkadminlogin(identifier, password);
+    Manager manager = managerService.checkmanagerlogin(identifier, password);
+    Employee employee = employeeService.checkemployeelogin(identifier, password);
 
-    if(admin !=null){
-        String token = jwtService.generateJWTToken(admin.getUsername(),"ADMIN");
-        Map<String,Object> res = new HashMap<String,Object>();
-        res.put("role","admin");
-        res.put("message","Login Succesful");
-        res.put("token",token);
-        res.put("data",admin);
-
+    if (admin != null) {
+        String token = jwtService.generateJWTToken(admin.getUsername(), "ADMIN");
+        Map<String, Object> res = new HashMap<>();
+        res.put("role", "admin");
+        res.put("message", "Login Successful");
+        res.put("token", token);
+        // Map Admin to AdminDTO
+        AdminDTO dto = new AdminDTO();
+        dto.setId(admin.getId());
+        dto.setUsername(admin.getUsername());
+        dto.setEmail(admin.getEmail());
+        dto.setRole("admin");
+        res.put("data", dto);
         return ResponseEntity.ok(res);
     }
-    if(manager!=null){
-        String token = jwtService.generateJWTToken(manager.getUsername(),"MANAGER");
-        Map<String,Object> res = new HashMap<String,Object>();
-        res.put("role","manager");
-        res.put("message","Login Succesful");
-        res.put("token",token);
-        res.put("data",manager);
-
-        return ResponseEntity.ok(res);
-
-    }
-    if(employee!=null) {
-        if (employee.getAccountstatus().equalsIgnoreCase("Accepted")){
-            String token = jwtService.generateJWTToken(employee.getUsername(),"EMPLOYEE");
-            Map<String,Object> res = new HashMap<String,Object>();
-            res.put("role","employee");
-            res.put("message","Login Succesful");
-            res.put("token",token);
-            res.put("data",employee);
-
+    if (manager != null) {
+        if (manager.getAccountstatus().equalsIgnoreCase("ACCEPTED")) {
+            // Pass managerId to JWT for managers
+            String token = jwtService.generateJWTToken(manager.getUsername(), "MANAGER", manager.getId());
+            Map<String, Object> res = new HashMap<>();
+            res.put("role", "manager");
+            res.put("message", "Login Successful");
+            res.put("token", token);
+            ManagerDTO dto = new ManagerDTO();
+            dto.setId(manager.getId());
+            dto.setName(manager.getName());
+            dto.setUsername(manager.getUsername());
+            dto.setEmail(manager.getEmail());
+            dto.setRole("manager");
+            res.put("data", dto);
             return ResponseEntity.ok(res);
-
-        }
-        else{
-            return ResponseEntity.status(401).body(Map.of("message","Account Not approved yet Please Contact Admins" + employee.getAccountstatus()));
-
+        } else {
+            Map<String, Object> res = new HashMap<>();
+            res.put("message", "Account Not accepted yet. Please Contact Admins. Status: " + manager.getAccountstatus());
+            return ResponseEntity.status(401).body(res);
         }
     }
-    return ResponseEntity.status(401).body(Map.of("message","invalid username/email or password"));
+    if (employee != null) {
+        if (employee.getAccountstatus() != null && employee.getAccountstatus().equalsIgnoreCase("Accepted")) {
+            String token = jwtService.generateJWTToken(employee.getUsername(), "EMPLOYEE");
+            Map<String, Object> res = new HashMap<>();
+            res.put("role", "employee");
+            res.put("message", "Login Successful");
+            res.put("token", token);
+            // Map Employee to EmployeeDTO
+            EmployeeDTO dto = new EmployeeDTO();
+            dto.setId(employee.getId());
+            dto.setName(employee.getName());
+            dto.setUsername(employee.getUsername());
+            dto.setEmail(employee.getEmail());
+            dto.setRole("employee");
+            res.put("data", dto);
+            return ResponseEntity.ok(res);
+        } else {
+            Map<String, Object> res = new HashMap<>();
+            res.put("message", "Account Not accepted yet. Please Contact Admins. Status: " + employee.getAccountstatus());
+            return ResponseEntity.status(401).body(res);
+        }
+    }
 
-
+    Map<String, Object> res = new HashMap<>();
+    res.put("message", "Invalid username/email or password");
+    return ResponseEntity.status(401).body(res);
     }
 }
