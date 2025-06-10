@@ -678,23 +678,3 @@ function assignRole() {
 3. Commit your changes
 4. Push to the branch (`git push origin feature/your-feature`)
 5. Create a pull request
-
----
-
-_Add your license here (e.g., MIT, Apache 2.0, etc.)_
-
----
-
-## Contact
-
-For questions or support, contact [your-email@example.com].
-
----
-
-**How to add your images:**  
-1. Save your screenshots as `login.png`, `admin_dashboard.png`, `employee_management.png`, `manager_management.png`, `settings.png`.
-2. Place them in a folder like `docs/images/` in your project.
-3. The markdown above will render them in your documentation.
-
-If you want the file as plain text, just copy this content and save it as `README.md`!  
-Let me know if you need any more customization or want to add more features/screenshots.
